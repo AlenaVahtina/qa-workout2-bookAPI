@@ -9,7 +9,9 @@ logging.basicConfig(level="DEBUG")
 
 
 async def getAllBooks(request):
-    db.select_all_book()
+    x.select_all_book()
+    resp = "{}"
+    return web.json_response(resp, status=200)
 
 
 
