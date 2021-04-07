@@ -10,10 +10,7 @@ logging.basicConfig(level="DEBUG")
 
 async def getBook(request):
     book_id = str(request.match_info['book_id'])
-    print(book_id)
-    test = x.select_one_book(book_id)
-    print(test)
-    resp = "{}"
+    resp = x.select_one_book(book_id)
     return web.json_response(resp, status=200)
 
 

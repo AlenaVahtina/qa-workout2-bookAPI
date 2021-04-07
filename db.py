@@ -1,6 +1,11 @@
 import sqlite3
 from sqlite3 import Error
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
 class DB:
     def __init__(self):
@@ -12,6 +17,7 @@ class DB:
             print(sqlite3.version)
         except Error as e:
             print(e)
+
 
     def create_db(self):
         cur = self.conn.cursor()
@@ -38,6 +44,12 @@ class DB:
         print(book.fetchall())
 
     def select_one_book(self, book_id):
+        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        book = cur.execute("SELECT * from book where id=?", book_id)
-        return book.fetchone()
+        book = cur.execute("SELECT id, name, year, description from book where id=?", book_id).fetchone()
+        result = {"id": book["id"],
+                  "name": book["name"],
+                  "year": book["year"],
+                  "description": book["description"]}
+        return result
+
