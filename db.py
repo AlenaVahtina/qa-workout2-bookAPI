@@ -36,3 +36,8 @@ class DB:
         cur = self.conn.cursor()
         book = cur.execute("SELECT * from book")
         print(book.fetchall())
+
+    def select_one_book(self, book_id):
+        cur = self.conn.cursor()
+        book = cur.execute("SELECT * from book where id=?", book_id)
+        return book.fetchone()

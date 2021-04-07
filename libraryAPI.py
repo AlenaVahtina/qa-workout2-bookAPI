@@ -8,6 +8,15 @@ from db import DB
 logging.basicConfig(level="DEBUG")
 
 
+async def getBook(request):
+    book_id = str(request.match_info['book_id'])
+    print(book_id)
+    test = x.select_one_book(book_id)
+    print(test)
+    resp = "{}"
+    return web.json_response(resp, status=200)
+
+
 async def getAllBooks(request):
     x.select_all_book()
     resp = "{}"
@@ -26,7 +35,7 @@ cors = aiohttp_cors.setup(app, defaults={
 
 # # All GET
 app.add_routes([web.get("/library/books/", getAllBooks)])
-# app.add_routes([web.get("/library/books/{book_id}", getBook)])
+app.add_routes([web.get("/library/books/{book_id}", getBook)])
 # app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
 # app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
 # app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
