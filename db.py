@@ -1,11 +1,13 @@
 import sqlite3
 from sqlite3 import Error
 
+
 def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
+
 
 class DB:
     def __init__(self):
@@ -17,7 +19,6 @@ class DB:
             print(sqlite3.version)
         except Error as e:
             print(e)
-
 
     def create_db(self):
         cur = self.conn.cursor()
@@ -39,9 +40,16 @@ class DB:
         self.conn.commit()
 
     def select_all_book(self):
+        result = []
+        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        book = cur.execute("SELECT * from book")
-        print(book.fetchall())
+        books = cur.execute("SELECT id, name, year, description from book")
+        for row in books:
+            result.append({"id": row["id"],
+                        "name": row["name"],
+                        "year": row["year"],
+                        "description": row["description"]})
+        return result
 
     def select_one_book(self, book_id):
         self.conn.row_factory = dict_factory
@@ -52,4 +60,3 @@ class DB:
                   "year": book["year"],
                   "description": book["description"]}
         return result
-

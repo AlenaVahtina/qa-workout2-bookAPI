@@ -10,15 +10,17 @@ logging.basicConfig(level="DEBUG")
 
 async def getBook(request):
     book_id = str(request.match_info['book_id'])
-    resp = x.select_one_book(book_id)
-    return web.json_response(resp, status=200)
+    if int(book_id) < 0:
+        resp = "{Error}"
+        return web.json_response(resp, status=422)
+    else:
+        resp = x.select_one_book(book_id)
+        return web.json_response(resp, status=200)
 
 
 async def getAllBooks(request):
-    x.select_all_book()
-    resp = "{}"
+    resp = x.select_all_book()
     return web.json_response(resp, status=200)
-
 
 
 app = web.Application()
@@ -55,9 +57,6 @@ app.add_routes([web.get("/library/books/{book_id}", getBook)])
 # # All HEAD
 # app.add_routes([web.get("/library/books/{book_id}", getBookHEAD)])
 
-
-# for route in list(app.router.routes()):
-#     cors.add(route)
 
 if __name__ == '__main__':
     x = DB()
