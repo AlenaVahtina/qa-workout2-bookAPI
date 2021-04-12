@@ -37,6 +37,7 @@ class DB:
         cur.execute("INSERT INTO book(name, year, description) VALUES('Два капитана', '1944',"
                     " 'Приключенческий роман писателя Вениамина Каверина, который был написан им в 1938—1944 годах')")
         cur.execute("INSERT INTO author(first_name, last_name) VALUES('','')")
+        cur.execute("INSERT INTO page(book_id, content, is_torn) VALUES(1, 'Жили-были старик со старухой', 'false')")
         self.conn.commit()
 
     def select_all_book(self):
@@ -46,9 +47,9 @@ class DB:
         books = cur.execute("SELECT id, name, year, description from book")
         for row in books:
             result.append({"id": row["id"],
-                        "name": row["name"],
-                        "year": row["year"],
-                        "description": row["description"]})
+                           "name": row["name"],
+                           "year": row["year"],
+                           "description": row["description"]})
         return result
 
     def select_one_book(self, book_id):
@@ -59,4 +60,18 @@ class DB:
                   "name": book["name"],
                   "year": book["year"],
                   "description": book["description"]}
+        return result
+
+    def select_pages(self, book_id):
+        result = {"book": None,
+                  "pages": []}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        book_name = cur.execute("SELECT name FROM book where id=?", book_id).fetchone()
+        result["book"] = book_name["name"]
+        pages = cur.execute("SELECT id, content, is_torn FROM page WHERE book_id=?", book_id)
+        for row in pages:
+            result["pages"].append({"id": row["id"],
+                                    "content": row["content"],
+                                    "is_torn": row["is_torn"]})
         return result

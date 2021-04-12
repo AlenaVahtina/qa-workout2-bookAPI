@@ -11,7 +11,7 @@ logging.basicConfig(level="DEBUG")
 async def getBook(request):
     book_id = str(request.match_info['book_id'])
     if int(book_id) < 0:
-        resp = "{Error}"
+        resp = "{'Error': 'book can't have id<0'}"
         return web.json_response(resp, status=422)
     else:
         resp = x.select_one_book(book_id)
@@ -20,6 +20,12 @@ async def getBook(request):
 
 async def getAllBooks(request):
     resp = x.select_all_book()
+    return web.json_response(resp, status=200)
+
+
+async def getBookAllPages(request):
+    book_id = str(request.match_info['book_id'])
+    resp = x.select_pages(book_id)
     return web.json_response(resp, status=200)
 
 
@@ -32,10 +38,10 @@ cors = aiohttp_cors.setup(app, defaults={
     )
 })
 
-# # All GET
+# All GET
 app.add_routes([web.get("/library/books/", getAllBooks)])
 app.add_routes([web.get("/library/books/{book_id}", getBook)])
-# app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
+app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
 # app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
 # app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 # app.add_routes([web.get("/library/authors", getAuthors)])
