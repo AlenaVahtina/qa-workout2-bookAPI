@@ -29,6 +29,12 @@ async def getBookAllPages(request):
     return web.json_response(resp, status=200)
 
 
+async def getBookSinglePage(request):
+    book_id = str(request.match_info['book_id'])
+    page_id = str(request.match_info['page_id'])
+    resp = x.select_page(book_id, page_id)
+    return web.json_response(resp, status=200)
+
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={
     "*": aiohttp_cors.ResourceOptions(
@@ -38,11 +44,12 @@ cors = aiohttp_cors.setup(app, defaults={
     )
 })
 
+
 # All GET
 app.add_routes([web.get("/library/books/", getAllBooks)])
 app.add_routes([web.get("/library/books/{book_id}", getBook)])
 app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
-# app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
+app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
 # app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 # app.add_routes([web.get("/library/authors", getAuthors)])
 # app.add_routes([web.get("/library/authors/{author_id}/books/", getAuthorBooks)])
@@ -61,7 +68,7 @@ app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
 # app.add_routes([web.delete("/library/books/{book_id}", deleteBook)])
 #
 # # All HEAD
-# app.add_routes([web.get("/library/books/{book_id}", getBookHEAD)])
+# app.add_routes([web.get("/library/books/{book_id}", inventorization)])
 
 
 if __name__ == '__main__':
