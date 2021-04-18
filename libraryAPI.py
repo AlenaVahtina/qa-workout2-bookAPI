@@ -47,6 +47,12 @@ async def getAuthors(request):
     return web.json_response(resp, status=200)
 
 
+async def addBook(request):
+    books = await request.json()
+    resp = x.insert_books(books)
+    return web.json_response(resp, status=200)
+
+
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={
     "*": aiohttp_cors.ResourceOptions(
@@ -65,7 +71,7 @@ app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 app.add_routes([web.get("/library/authors/", getAuthors)])
 
 # # All POST
-# app.add_routes([web.post("/library/books/", addBook)])
+app.add_routes([web.post("/library/books/", addBook)])
 # app.add_routes([web.post("/library/authors/{author_id}", addAuthorBooks)])
 #
 # # All PUT

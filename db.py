@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+import json
 
 
 def dict_factory(cursor, row):
@@ -111,4 +112,14 @@ class DB:
         for row in authors:
             result.append({"first_name": row["first_name"],
                           "last_name": row["last_name"]})
+        return result
+
+    def insert_books(self, books):
+        result = {}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        for book in books:
+            cur.execute("INSERT INTO book(name, year, description) VALUES(?,?,?)", (book["name"], book["year"],
+                                                                                    book["description"]))
+            self.conn.commit()
         return result
