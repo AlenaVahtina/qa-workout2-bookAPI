@@ -22,7 +22,7 @@ class DB:
 
     def create_db(self):
         cur = self.conn.cursor()
-        cur.execute("CREATE TABLE author(id INTEGER, first_name varchar(32), last_name varchar(32), "
+        cur.execute("CREATE TABLE author(id INTEGER, first_name varchar(32), last_name varchar(32),"
                     "PRIMARY KEY (id))")
         cur.execute("CREATE TABLE book(id INTEGER, name varchar(100), year date, description text, "
                     "PRIMARY KEY (id))")
@@ -36,10 +36,11 @@ class DB:
         cur.execute("INSERT INTO book(name, year, description) VALUES('Сказки', '1994', 'Сказки народов мира')")
         cur.execute("INSERT INTO book(name, year, description) VALUES('Два капитана', '1944',"
                     " 'Приключенческий роман писателя Вениамина Каверина, который был написан им в 1938—1944 годах')")
-        cur.execute("INSERT INTO author(first_name, last_name) VALUES('','')")
         cur.execute("INSERT INTO page(book_id, content, is_destroyed) "
                     "VALUES(1,'Жили-были старик со старухой', 'false')")
         cur.execute("INSERT INTO page(book_id, content, is_destroyed) VALUES(1, 'У самого синего моря', 'false')")
+        cur.execute("INSERT INTO author(first_name, last_name) VALUES('Александр', 'Пушкин')")
+        cur.execute("INSERT INTO  book_author(book_id, author_id) VALUES(1,1)")
         self.conn.commit()
 
     def select_all_book(self):
@@ -87,4 +88,27 @@ class DB:
             "content": page["content"],
             "destroyed": page["is_destroyed"]
         }
+        return result
+
+    def select_authors_by_book(self, book_id):
+        result = []
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        authors = cur.execute("SELECT a.first_name, a.last_name FROM author as a "
+                              "INNER JOIN book_author as ba "
+                              "ON a.id=ba.author_id "
+                              "WHERE ba.book_id=?", book_id)
+        for row in authors:
+            result.append({"first_name": row["first_name"],
+                          "last_name": row["last_name"]})
+        return result
+
+    def select_authors(self):
+        result = []
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        authors = cur.execute("SELECT first_name, last_name FROM author")
+        for row in authors:
+            result.append({"first_name": row["first_name"],
+                          "last_name": row["last_name"]})
         return result
