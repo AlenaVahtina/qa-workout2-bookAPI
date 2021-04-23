@@ -7,6 +7,14 @@ from db import DB
 
 logging.basicConfig(level="DEBUG")
 
+def validBooks(books):
+
+    for book in books:
+        resp = "{}"
+        if book["name"]:
+            resp = "{'Error':'test'}"
+            return resp
+
 
 async def getBook(request):
     book_id = str(request.match_info['book_id'])
@@ -70,9 +78,8 @@ app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSingl
 app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 app.add_routes([web.get("/library/authors/", getAuthors)])
 
-# # All POST
+# All POST
 app.add_routes([web.post("/library/books/", addBook)])
-# app.add_routes([web.post("/library/authors/{author_id}", addAuthorBooks)])
 #
 # # All PUT
 # app.add_routes([web.put("/library/books/{book_id}", updateBook)])

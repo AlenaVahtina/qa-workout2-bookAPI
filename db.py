@@ -121,5 +121,14 @@ class DB:
         for book in books:
             cur.execute("INSERT INTO book(name, year, description) VALUES(?,?,?)", (book["name"], book["year"],
                                                                                     book["description"]))
+            book_id = cur.lastrowid
+            for author in book['authors']:
+                cur.execute("INSERT INTO author(first_name, last_name) VALUES(?, ?)", (author["first_name"],
+                            author["last_name"]))
+                author_id = cur.lastrowid
+                cur.execute("INSERT INTO  book_author(book_id, author_id) VALUES(?,?)", (book_id, author_id))
+            for page in book["pages"]:
+                cur.execute("INSERT INTO page(book_id, content, is_destroyed) VALUES(?,?,?)", (book_id, page["content"],
+                                                                                               page["is_destroyed"]))
             self.conn.commit()
         return result
