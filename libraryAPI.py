@@ -7,12 +7,11 @@ from db import DB
 
 logging.basicConfig(level="DEBUG")
 
-def validBooks(books):
 
+def validBooks(books):
     for book in books:
-        resp = "{}"
-        if book["name"]:
-            resp = "{'Error':'test'}"
+        if not book.get("name", None):
+            resp = "{'Error':'Book can't be without a name'}"
             return resp
 
 
@@ -57,6 +56,9 @@ async def getAuthors(request):
 
 async def addBook(request):
     books = await request.json()
+    resp = validBooks(books)
+    if resp:
+        return web.json_response(resp, status=422)
     resp = x.insert_books(books)
     return web.json_response(resp, status=200)
 
