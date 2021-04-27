@@ -1,6 +1,5 @@
 import sqlite3
 from sqlite3 import Error
-import json
 
 
 def dict_factory(cursor, row):
@@ -83,7 +82,8 @@ class DB:
     def select_page(self, book_id, page_id):
         self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        page = cur.execute("SELECT id, content, is_destroyed FROM page WHERE book_id=? AND id=?", (book_id, page_id)).fetchone()
+        page = cur.execute("SELECT id, content, is_destroyed FROM page WHERE book_id=? AND id=?",
+                           (book_id, page_id)).fetchone()
         result = {
             "id": page["id"],
             "content": page["content"],
@@ -101,7 +101,7 @@ class DB:
                               "WHERE ba.book_id=?", book_id)
         for row in authors:
             result.append({"first_name": row["first_name"],
-                          "last_name": row["last_name"]})
+                           "last_name": row["last_name"]})
         return result
 
     def select_authors(self):
@@ -111,7 +111,7 @@ class DB:
         authors = cur.execute("SELECT first_name, last_name FROM author")
         for row in authors:
             result.append({"first_name": row["first_name"],
-                          "last_name": row["last_name"]})
+                           "last_name": row["last_name"]})
         return result
 
     def insert_books(self, books):
@@ -124,13 +124,14 @@ class DB:
             book_id = cur.lastrowid
             for author in book['authors']:
                 cur.execute("INSERT INTO author(first_name, last_name) VALUES(?,?)", (author["first_name"],
-                            author["last_name"]))
+                                                                                      author["last_name"]))
                 author_id = cur.lastrowid
                 cur.execute("INSERT INTO  book_author(book_id, author_id) VALUES(?,?)", (book_id, author_id))
             for page in book["pages"]:
                 cur.execute("INSERT INTO page(book_id, content, is_destroyed) VALUES(?,?,?)", (book_id, page["content"],
                                                                                                page["is_destroyed"]))
             self.conn.commit()
+            result = "{'OK':'Insert success'}"
         return result
 
     def update_books(self, book, book_id):
@@ -143,4 +144,19 @@ class DB:
             cur.execute("INSERT INTO page(book_id, content, is_destroyed) VALUES(?,?,?)", (book_id, page["content"],
                                                                                            page["is_destroyed"]))
         self.conn.commit()
+        result = "{'OK':'Update success'}"
+        return result
+
+    def update_book_single_page(self, new_page, book_id, page_id):
+        result = {}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        pages = cur.execute("SELECT id FROM page WHERE book_id=?", book_id).fetchall()
+        if int(page_id) in [int(x['id']) for x in pages]:
+            cur.execute("UPDATE page SET content=?, is_destroyed=0 WHERE id=?", (new_page["content"], page_id))
+        else:
+            cur.execute("INSERT INTO page(book_id, content, is_destroyed) VALUES(?,?,?)", (book_id, new_page["content"],
+                                                                                           "true"))
+        self.conn.commit()
+        result = "{'OK':'Update success'}"
         return result

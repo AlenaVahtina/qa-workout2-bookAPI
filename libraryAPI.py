@@ -1,8 +1,6 @@
 from aiohttp import web
 import aiohttp_cors
 import logging
-import json
-import datetime
 from db import DB
 
 logging.basicConfig(level="DEBUG")
@@ -70,6 +68,13 @@ async def updateBook(request):
     return web.json_response(resp, status=200)
 
 
+async def updateBookSinglePage(request):
+    page = await request.json()
+    book_id = str(request.match_info['book_id'])
+    page_id = str(request.match_info['page_id'])
+    resp = x.update_book_single_page(page, book_id, page_id)
+    return web.json_response(resp, status=200)
+
 
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={
@@ -87,21 +92,22 @@ app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
 app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
 app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 app.add_routes([web.get("/library/authors/", getAuthors)])
+# app.add_routes([web.get("/library/books/{book_id}", downloadBook)])
 
 # All POST
 app.add_routes([web.post("/library/books/", addBook)])
-#
+
 # All PUT
 app.add_routes([web.put("/library/books/{book_id}", updateBook)])
-#
-# # All PATCH
-# app.add_routes([web.patch("/library/books/{book_id}/pages/{page_id}", updateBookSinglePage)])
-#
-# # All DELETE
+
+# All PATCH
+app.add_routes([web.patch("/library/books/{book_id}/pages/{page_id}", updateBookSinglePage)])
+
+# All DELETE
 # app.add_routes([web.delete("/library/books/{book_id}", deleteBook)])
-#
-# # All HEAD
-# app.add_routes([web.get("/library/books/{book_id}", downloadBook)])
+
+# All HEAD
+# app.add_routes([web.head("/library/books/{book_id}", downloadBook)])
 
 
 if __name__ == '__main__':
