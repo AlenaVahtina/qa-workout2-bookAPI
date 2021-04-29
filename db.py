@@ -160,3 +160,14 @@ class DB:
         self.conn.commit()
         result = "{'OK':'Update success'}"
         return result
+
+    def delete_book(self, book_id):
+        result = {}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        cur.execute("DELETE FROM book WHERE id=?", book_id)
+        cur.execute("DELETE FROM book_author WHERE book_id=?", book_id)
+        cur.execute("DELETE FROM page WHERE book_id=?", book_id)
+        self.conn.commit()
+        result = "{'OK':'Delete success'}"
+        return result

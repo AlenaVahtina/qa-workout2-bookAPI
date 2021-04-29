@@ -76,6 +76,11 @@ async def updateBookSinglePage(request):
     return web.json_response(resp, status=200)
 
 
+async def  deleteBook(request):
+    book_id = str(request.match_info['book_id'])
+    resp = x.delete_book(book_id)
+    return web.json_response(resp, status=200)
+
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={
     "*": aiohttp_cors.ResourceOptions(
@@ -104,7 +109,7 @@ app.add_routes([web.put("/library/books/{book_id}", updateBook)])
 app.add_routes([web.patch("/library/books/{book_id}/pages/{page_id}", updateBookSinglePage)])
 
 # All DELETE
-# app.add_routes([web.delete("/library/books/{book_id}", deleteBook)])
+app.add_routes([web.delete("/library/books/{book_id}", deleteBook)])
 
 # All HEAD
 # app.add_routes([web.head("/library/books/{book_id}", downloadBook)])
