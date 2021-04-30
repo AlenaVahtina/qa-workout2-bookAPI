@@ -76,10 +76,22 @@ async def updateBookSinglePage(request):
     return web.json_response(resp, status=200)
 
 
-async def  deleteBook(request):
+async def deleteBook(request):
     book_id = str(request.match_info['book_id'])
     resp = x.delete_book(book_id)
     return web.json_response(resp, status=200)
+
+
+async def downloadBookInfo(request):
+    book_id = str(request.match_info['book_id'])
+    # HEADERS = x.download_book_inf(book_id)
+    HEADERS = {'page-count': '3'}
+    return web.json_response(status=200, headers=HEADERS)
+
+
+async def downloadBook(request):
+    book_id = str(request.match_info['book_id'])
+    return web.json_response(status=200)
 
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={
@@ -97,7 +109,7 @@ app.add_routes([web.get("/library/books/{book_id}/pages/", getBookAllPages)])
 app.add_routes([web.get("/library/books/{book_id}/pages/{page_id}", getBookSinglePage)])
 app.add_routes([web.get("/library/books/{book_id}/authors/", getBookAuthors)])
 app.add_routes([web.get("/library/authors/", getAuthors)])
-# app.add_routes([web.get("/library/books/{book_id}", downloadBook)])
+app.add_routes([web.get("/library/books/{book_id}/download", downloadBook, allow_head=False)])
 
 # All POST
 app.add_routes([web.post("/library/books/", addBook)])
@@ -112,7 +124,7 @@ app.add_routes([web.patch("/library/books/{book_id}/pages/{page_id}", updateBook
 app.add_routes([web.delete("/library/books/{book_id}", deleteBook)])
 
 # All HEAD
-# app.add_routes([web.head("/library/books/{book_id}", downloadBook)])
+app.add_routes([web.head("/library/books/{book_id}/download", downloadBookInfo)])
 
 
 if __name__ == '__main__':

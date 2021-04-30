@@ -171,3 +171,11 @@ class DB:
         self.conn.commit()
         result = "{'OK':'Delete success'}"
         return result
+
+    def download_book_inf(self, book_id):
+        result = {}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        count = cur.execute("SELECT count(*) FROM page WHERE book_id=?", book_id)
+        result = {'page-count': count}
+        return result
