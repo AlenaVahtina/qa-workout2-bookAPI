@@ -84,14 +84,14 @@ async def deleteBook(request):
 
 async def downloadBookInfo(request):
     book_id = str(request.match_info['book_id'])
-    # HEADERS = x.download_book_inf(book_id)
-    HEADERS = {'page-count': '3'}
+    HEADERS = x.download_book_inf(book_id)
     return web.json_response(status=200, headers=HEADERS)
 
 
 async def downloadBook(request):
     book_id = str(request.match_info['book_id'])
-    return web.json_response(status=200)
+    resp = x.download_book(book_id)
+    return web.json_response(resp, status=200)
 
 app = web.Application()
 cors = aiohttp_cors.setup(app, defaults={

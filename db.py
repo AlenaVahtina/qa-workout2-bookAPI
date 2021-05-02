@@ -176,6 +176,19 @@ class DB:
         result = {}
         self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        count = cur.execute("SELECT count(*) FROM page WHERE book_id=?", book_id)
-        result = {'page-count': count}
+        count = cur.execute("SELECT count(*) as c FROM page WHERE book_id=?", book_id).fetchone()
+        result = {'page-count': str(count["c"])}
+        return result
+
+    def download_book(self, book_id):
+        result = {"book": None,
+                  "pages": []}
+        self.conn.row_factory = dict_factory
+        cur = self.conn.cursor()
+        book_name = cur.execute("SELECT name FROM book WHERE id=?", book_id).fetchone()
+        pages = cur.execute("SELECT id, content FROM page WHERE book_id=?", book_id)
+        result["book"] = book_name["name"]
+        for page in pages:
+            result["pages"].append({"id": page["id"],
+                                    "content": page["content"]})
         return result
