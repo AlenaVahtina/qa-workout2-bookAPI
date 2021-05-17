@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "abb49ade-6b26-42a7-84d5-5732ecc2c7fb",
+		"name": "QA-workout-2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET all books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET one book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET  all pages from one book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/1/pages/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"1",
+						"pages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET  one page from one book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/1/pages/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"1",
+						"pages",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET  all authors from one book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/1/authors/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"1",
+						"authors",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET  all authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/authors/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"authors",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n{\n    \"name\":\"Сабриэль 2\",\n    \"year\":2005,\n    \"description\":\"Главная героиня романа Сабриэль, дочь чародея из волшебной страны, отправляется за границы Старого Королевства и вступает в борьбу со злым гением, магом Керригором.\",\n    \"authors\":[\n        {\n        \"first_name\":\"Гарт\",\n        \"last_name\":\"Никс\"\n        }\n    ],\n    \"pages\":[\n    {\n    \"content\":\"По ту сторону Стены, в Анцельстьерре, в безоблачном небе сияло полуденное солнце, а здесь, в Древнем королевстве, всего-то в трех милях от Стены, клубились тучи и солнце уже садилось. Зарядил обложной дождь – даже лагерь разбить не успели, как ливень хлынул стеной.\",\n    \"is_destroyed\":false\n    }\n    ]\n}\n]"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Сабриэль\",\n    \"year\":2005,\n    \"description\":\"Главная героиня романа Сабриэль, дочь чародея из волшебной страны, отправляется за границы Старого Королевства и вступает в борьбу со злым гением, магом Керригором.\",\n    \"authors\":[\n        {\n        \"first_name\":\"Гарт\",\n        \"last_name\":\"Никс\"\n        }\n    ],\n    \"pages\":[\n    {\n    \"content\":\"По ту сторону Стены, в Анцельстьерре, в безоблачном небе сияло полуденное солнце, а здесь, в Древнем королевстве, всего-то в трех милях от Стены, клубились тучи и солнце уже садилось. Зарядил обложной дождь – даже лагерь разбить не успели, как ливень хлынул стеной.\",\n    \"is_destroyed\":false\n    }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/3",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH book",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\":\"По ту сторону Стены, в Анцельстьерре, в безоблачном небе сияло полуденное солнце, а здесь, в Древнем королевстве, всего-то в трех милях от Стены, клубились тучи и солнце уже садилось. Зарядил обложной дождь – даже лагерь разбить не успели, как ливень хлынул стеной.\",\n    \"is_destroyed\":true\n}"
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/3/pages/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"3",
+						"pages",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/3",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD book",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/library/books/1/pages/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"library",
+						"books",
+						"1",
+						"pages",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
