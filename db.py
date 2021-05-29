@@ -16,6 +16,7 @@ class DB:
     def create_connection(self):
         try:
             self.conn = sqlite3.connect(':memory:')
+            self.conn.row_factory = dict_factory
             print(sqlite3.version)
         except Error as e:
             print(e)
@@ -44,26 +45,14 @@ class DB:
         self.conn.commit()
 
     def select_all_book(self):
-        result = []
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        books = cur.execute("SELECT id, name, year, description from book")
-        for row in books:
-            result.append({"id": row["id"],
-                           "name": row["name"],
-                           "year": row["year"],
-                           "description": row["description"]})
-        return result
+        books = cur.execute("SELECT id, name, year, description from book").fetchall()
+        return books
 
     def select_one_book(self, book_id):
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         book = cur.execute("SELECT id, name, year, description from book where id=?", book_id).fetchone()
-        result = {"id": book["id"],
-                  "name": book["name"],
-                  "year": book["year"],
-                  "description": book["description"]}
-        return result
+        return book
 
     def select_pages(self, book_id):
         result = {"book": None,
@@ -72,51 +61,31 @@ class DB:
         cur = self.conn.cursor()
         book_name = cur.execute("SELECT name FROM book where id=?", book_id).fetchone()
         result["book"] = book_name["name"]
-        pages = cur.execute("SELECT id, content, is_destroyed FROM page WHERE book_id=?", book_id)
-        for row in pages:
-            result["pages"].append({"id": row["id"],
-                                    "content": row["content"],
-                                    "is_destroyed": row["is_destroyed"]})
+        pages = cur.execute("SELECT id, content, is_destroyed FROM page WHERE book_id=?", book_id).fetchall()
+        result["pages"] = pages
         return result
 
     def select_page(self, book_id, page_id):
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         page = cur.execute("SELECT id, content, is_destroyed FROM page WHERE book_id=? AND id=?",
                            (book_id, page_id)).fetchone()
-        result = {
-            "id": page["id"],
-            "content": page["content"],
-            "destroyed": page["is_destroyed"]
-        }
-        return result
+        return page
 
     def select_authors_by_book(self, book_id):
-        result = []
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         authors = cur.execute("SELECT a.first_name, a.last_name FROM author as a "
                               "INNER JOIN book_author as ba "
                               "ON a.id=ba.author_id "
-                              "WHERE ba.book_id=?", book_id)
-        for row in authors:
-            result.append({"first_name": row["first_name"],
-                           "last_name": row["last_name"]})
-        return result
+                              "WHERE ba.book_id=?", book_id).fetchall()
+        return authors
 
     def select_authors(self):
-        result = []
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        authors = cur.execute("SELECT first_name, last_name FROM author")
-        for row in authors:
-            result.append({"first_name": row["first_name"],
-                           "last_name": row["last_name"]})
-        return result
+        authors = cur.execute("SELECT first_name, last_name FROM author").fetchall()
+        return authors
 
     def insert_books(self, books):
         result = {}
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         for book in books:
             cur.execute("INSERT INTO book(name, year, description) VALUES(?,?,?)", (book["name"], book["year"],
@@ -136,7 +105,6 @@ class DB:
 
     def update_books(self, book, book_id):
         result = {}
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         cur.execute("UPDATE book SET name=?, year=?, description=? WHERE id=?", (book["name"], book["year"],
                                                                                  book["description"], book_id))
@@ -149,7 +117,6 @@ class DB:
 
     def update_book_single_page(self, new_page, book_id, page_id):
         result = {}
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         pages = cur.execute("SELECT id FROM page WHERE book_id=?", book_id).fetchall()
         if int(page_id) in [int(x['id']) for x in pages]:
@@ -163,7 +130,6 @@ class DB:
 
     def delete_book(self, book_id):
         result = {}
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
         cur.execute("DELETE FROM book WHERE id=?", book_id)
         cur.execute("DELETE FROM book_author WHERE book_id=?", book_id)
@@ -173,9 +139,5 @@ class DB:
         return result
 
     def get_book_all_pages_info(self, book_id):
-        result = {}
-        self.conn.row_factory = dict_factory
         cur = self.conn.cursor()
-        count = cur.execute("SELECT count(*) as c FROM page WHERE book_id=?", book_id).fetchone()
-        result = {'page-count': str(count["c"])}
-        return result
+        return cur.execute("SELECT cast(count(*) as text) as \"Page-count\" FROM page WHERE book_id=?", book_id).fetchone()
